@@ -6,6 +6,10 @@
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
+class UCameraComponent;
+class USpringArmComponent;
+
+
 UCLASS()
 class TIGERRETALIATION_API ASCharacter : public ACharacter
 {
@@ -24,6 +28,13 @@ protected:
 
 	//Moves the player right or left
 	void MoveRight(float value);
+
+	//the camera component of the character
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCameraComponent* CameraComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	USpringArmComponent* SpringArmComp;
 
 public:	
 	// Called every frame
