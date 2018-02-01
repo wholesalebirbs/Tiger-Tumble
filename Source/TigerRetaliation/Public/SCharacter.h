@@ -29,6 +29,10 @@ protected:
 	//Moves the player right or left
 	void MoveRight(float value);
 
+	void BeginCrouch();
+
+	void EndCrouch();
+
 	//the camera component of the character
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCameraComponent* CameraComp;
