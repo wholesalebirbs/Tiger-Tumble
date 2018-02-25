@@ -1,16 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SWeapon.h"
-#include "Components/SkeletalMeshComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameFramework/DamageType.h"
 #include "Classes/Particles/ParticleSystem.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 
 static int32 DebugWeaponDrawing = 0;
-
-
 FAutoConsoleVariableRef CVARDebugWeaponDrawing(
 	TEXT("COOP.DebugWeapons"), 
 	DebugWeaponDrawing, 
@@ -21,22 +18,12 @@ FAutoConsoleVariableRef CVARDebugWeaponDrawing(
 // Sets default values
 ASWeapon::ASWeapon()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	MeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("MeshComp"));
 	RootComponent = MeshComp;
 
 
 	MuzzleSocketName = "MuzzleSocket";
 	TracerTargetName = "BeamEnd";
-}
-
-// Called when the game starts or when spawned
-void ASWeapon::BeginPlay()
-{
-	Super::BeginPlay();
-	
 }
 
 void ASWeapon::Fire()
@@ -82,9 +69,9 @@ void ASWeapon::Fire()
 		{
 			DrawDebugLine(GetWorld(), EyeLocation, TraceEnd, FColor::White, false, 1.0f, 0, 1.0f);
 
-
+			PlayFireEffects();
 		}
-		
+
 		if (MuzzleEffect)
 		{
 			UGameplayStatics::SpawnEmitterAttached(MuzzleEffect, MeshComp, MuzzleSocketName);
@@ -95,7 +82,7 @@ void ASWeapon::Fire()
 			FVector MuzzleLocation = MeshComp->GetSocketLocation(MuzzleSocketName);
 
 			UParticleSystemComponent* TracerComp = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), TracerEffect, MuzzleLocation);
-		
+
 			if (TracerComp)
 			{
 				TracerComp->SetVectorParameter(TracerTargetName, TracerEndPoint);
@@ -104,9 +91,7 @@ void ASWeapon::Fire()
 	}
 }
 
-// Called every frame
-void ASWeapon::Tick(float DeltaTime)
+void ASWeapon::PlayFireEffects()
 {
-	Super::Tick(DeltaTime);
-}
 
+}
