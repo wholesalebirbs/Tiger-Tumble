@@ -24,10 +24,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USkeletalMeshComponent* MeshComp;
 
-	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void Fire();
-
-	void PlayFireEffects();
+	void PlayFireEffects(FVector TraceEnd);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon")
 	TSubclassOf<UDamageType> DamageType;
@@ -48,4 +45,6 @@ protected:
 	UParticleSystem* TracerEffect;
 
 public:		
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+		void Fire();
 };
