@@ -6,7 +6,7 @@
 #include "GameFramework/PawnMovementComponent.h"
 
 #include "Classes/Components/SkeletalMeshComponent.h"
-#include "Classes/Components/SceneComponent.h"
+//#include "Classes/Components/SceneComponent.h"
 #include "SWeapon.h"
 //#include "../Public/SCharacter.h"
 
