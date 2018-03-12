@@ -6,7 +6,9 @@
 #include "GameFramework/PawnMovementComponent.h"
 
 #include "Classes/Components/SkeletalMeshComponent.h"
+#include "Components/CapsuleComponent.h"
 //#include "Classes/Components/SceneComponent.h"
+#include "TigerRetaliation/TigerRetaliation.h"
 #include "SWeapon.h"
 //#include "../Public/SCharacter.h"
 
@@ -22,6 +24,8 @@ ASCharacter::ASCharacter()
 	SpringArmComp->SetupAttachment(RootComponent);
 
 	GetMovementComponent()->GetNavAgentPropertiesRef().bCanCrouch = true;
+
+	GetCapsuleComponent()->SetCollisionResponseToChannel(COLLISION_WEAPON, ECR_Ignore);
 
 	//creates a camera component and attahces it to spring armcomp
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
