@@ -107,7 +107,7 @@ void ASCharacter::StopFire()
 	}
 }
 
-void ASCharacter::OnHealthChanged(USHealthComponent* HealthComp, 
+void ASCharacter::OnHealthChanged(USHealthComponent* healthComp, 
 	float Health, float HealthDelta, const class UDamageType* DamageType, 
 	class AController* InstigatedBy, AActor* DamageCauser)
 {
