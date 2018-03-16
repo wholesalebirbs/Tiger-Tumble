@@ -28,6 +28,10 @@ ASTrackerBot::ASTrackerBot()
 
 	RequiredDistanceToTarget = 100;
 
+	ExplosionDamage = 40;
+
+	ExplosionRadius = 200;
+
 }
 
 // Called when the game starts or when spawned
@@ -42,8 +46,6 @@ void ASTrackerBot::BeginPlay()
 
 void ASTrackerBot::HandleTakeDamage(USHealthComponent * OwningHealthComp, float Health, float HealthDelta, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)
 {
-	//Explode on hitpoints is 0
-	
 	//TODO Pulse material on hit
 	if (MatInst == nullptr)
 	{
@@ -57,6 +59,12 @@ void ASTrackerBot::HandleTakeDamage(USHealthComponent * OwningHealthComp, float 
 
 	
 	UE_LOG(LogTemp, Log, TEXT("Health %s of %s"), *FString::SanitizeFloat(Health), *GetName());
+
+	//Explode on hitpoints is 0
+	if (Health <= 0.0f)
+	{
+		SelfDestruct();
+	}
 }
 
 FVector ASTrackerBot::GetNextPathPoint()
@@ -72,6 +80,28 @@ FVector ASTrackerBot::GetNextPathPoint()
 	}
 
 	return GetActorLocation();
+}
+
+void ASTrackerBot::SelfDestruct()
+{
+	if (bExploded)
+	{
+		return;
+	}
+	bExploded = true;
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
+	
+	TArray<AActor*> IgnoredActors;
+	IgnoredActors.Add(this);
+
+	//Apply Damage
+	UGameplayStatics::ApplyRadialDamage(this, ExplosionDamage, GetActorLocation(), ExplosionRadius, nullptr, IgnoredActors, this, GetInstigatorController(), true);
+
+	DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 12, FColor::Red, false, 2.0, 0, 1.0f);
+
+	//delete actor immediately
+	Destroy();
 }
 
 // Called every frame
