@@ -2,6 +2,7 @@
 
 #include "SHealthComponent.h"
 #include "Net/UnrealNetwork.h"
+#include "../../Public/Components/SHealthComponent.h"
 
 
 // Sets default values for this component's properties
@@ -45,6 +46,12 @@ void USHealthComponent::HandleTakeAnyDamage(AActor * DamagedActor, float Damage,
 	UE_LOG(LogTemp, Log, TEXT("Health Changed: %s"), *FString::SanitizeFloat(Health));
 
 	OnHealthChanged.Broadcast(this, Health, Damage, DamageType, InstigatedBy, DamageCauser);
+}
+
+void USHealthComponent::OnRep_Health(float OldHealth)
+{
+	float Damage = Health - OldHealth;
+	OnHealthChanged.Broadcast(this, Health, Damage , nullptr, nullptr, nullptr);
 }
 
 //lets us specify what we want to replicate 
