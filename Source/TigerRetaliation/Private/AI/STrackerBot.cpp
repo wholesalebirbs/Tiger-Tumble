@@ -2,12 +2,15 @@
 
 #include "STrackerBot.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "AI/Navigation/NavigationSystem.h"
 #include "GameFramework/Character.h"
 #include "AI/Navigation/NavigationPath.h"
 #include "DrawDebugHelpers.h"
 #include "SHealthComponent.h"
+#include "Sound/SoundCue.h"
+#include "SCharacter.h"
 
 // Sets default values
 ASTrackerBot::ASTrackerBot()
@@ -23,14 +26,22 @@ ASTrackerBot::ASTrackerBot()
 	HealthComp = CreateDefaultSubobject<USHealthComponent>(TEXT("HealthComp"));
 	HealthComp->OnHealthChanged.AddDynamic(this, &ASTrackerBot::HandleTakeDamage);
 	
+	SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
+	SphereComp->SetSphereRadius(200);
+	SphereComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	SphereComp->SetCollisionResponseToAllChannels(ECR_Ignore);
+	SphereComp->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	SphereComp->SetupAttachment(RootComponent);
+
 	bUseVelocityChange = false;
 	MovementForce = 1000;
 
 	RequiredDistanceToTarget = 100;
 
 	ExplosionDamage = 40;
-
 	ExplosionRadius = 200;
+
+	SelfDamageInterval = 0.25;
 
 }
 
@@ -42,6 +53,7 @@ void ASTrackerBot::BeginPlay()
 	//find initial moveto
 	FVector NextPoint = GetNextPathPoint();
 	
+	//OnActorBeginOverlap.AddDynamic
 }
 
 void ASTrackerBot::HandleTakeDamage(USHealthComponent * OwningHealthComp, float Health, float HealthDelta, const UDamageType * DamageType, AController * InstigatedBy, AActor * DamageCauser)
@@ -100,8 +112,15 @@ void ASTrackerBot::SelfDestruct()
 
 	DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRadius, 12, FColor::Red, false, 2.0, 0, 1.0f);
 
+	UGameplayStatics::PlaySoundAtLocation(this, ExplodeSound, GetActorLocation());
+
 	//delete actor immediately
 	Destroy();
+}
+
+void ASTrackerBot::DamageSelf()
+{
+	UGameplayStatics::ApplyDamage(this, 20, GetInstigatorController(), this, nullptr);
 }
 
 // Called every frame
@@ -130,6 +149,24 @@ void ASTrackerBot::Tick(float DeltaTime)
 	}
 
 	DrawDebugSphere(GetWorld(), NextPathPoint, 20, 12, FColor::Yellow, false, 4.0f, 1.0f);
+}
+
+void ASTrackerBot::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	if (!bStartedSelfDestruct)
+	{
+		ASCharacter* PlayerPawn = Cast<ASCharacter>(OtherActor);
+		if (PlayerPawn)
+		{
+			GetWorldTimerManager().SetTimer(TimerHandle_SelfDamage, this, &ASTrackerBot::DamageSelf, SelfDamageInterval, true, 0.0f);
+
+			bStartedSelfDestruct = true;
+
+			UGameplayStatics::SpawnSoundAttached(SelfDestructSound, RootComponent);
+		}
+	}
+
+
 }
 
 
