@@ -3,6 +3,8 @@
 #include "SGameMode.h"
 #include "TimerManager.h"
 #include "SHealthComponent.h"
+#include "SGameState.h"
+
 
 
 void ASGameMode::SpawnBotTimerElapsed()
@@ -102,9 +104,20 @@ void ASGameMode::GameOver()
 	UE_LOG(LogTemp, Log, TEXT("GAME OVER! Players Died!"))
 }
 
+void ASGameMode::SetWaveState(EWaveState NewState)
+{
+	ASGameState* GS = GetGameState<ASGameState>();
+	if (ensureAlways(GS))
+	{
+		GS->WaveState = NewState;
+	}
+}
+
 ASGameMode::ASGameMode()
 {
 	TimeBetweenWaves = 2.0f;
+
+	GameStateClass = ASGameState::StaticClass();
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 1.0f;
