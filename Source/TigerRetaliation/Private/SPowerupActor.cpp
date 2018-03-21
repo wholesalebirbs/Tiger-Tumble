@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "SPowerupActor.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -8,13 +9,12 @@ ASPowerupActor::ASPowerupActor()
 {
 	PowerupInterval = 0.0f;
 	TotalNrOfTicks = 0;
+
+	bIsPowerupActive = false;
+
+	SetReplicates(true);
 }
 
-// Called when the game starts or when spawned
-void ASPowerupActor::BeginPlay()
-{
-	Super::BeginPlay();
-}
 
 void ASPowerupActor::OnTickPowerup()
 {
@@ -32,9 +32,19 @@ void ASPowerupActor::OnTickPowerup()
 	}
 }
 
+void ASPowerupActor::OnRep_PowerupActive()
+{
+	OnPowerupStateChanged(bIsPowerupActive);
+}
+
 void ASPowerupActor::ActivatePowerup()
 {
 	OnActivated();
+	//set s the variable
+	bIsPowerupActive = true;
+	
+	//replicates to all the clients
+	OnRep_PowerupActive();
 
 	if (PowerupInterval > 0.0)
 	{
@@ -45,5 +55,13 @@ void ASPowerupActor::ActivatePowerup()
 		OnTickPowerup();
 	}
 
+}
+
+//lets us specifi what we want to replicate 
+void ASPowerupActor::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPowerupActor, bIsPowerupActive);
 }
 
