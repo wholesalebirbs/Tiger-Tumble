@@ -4,6 +4,7 @@
 #include "TimerManager.h"
 #include "SHealthComponent.h"
 #include "SGameState.h"
+#include "SPlayerState.h"
 
 void ASGameMode::SpawnBotTimerElapsed()
 {
@@ -38,10 +39,11 @@ void ASGameMode::EndWave()
 
 void ASGameMode::PrepareForNextWave()
 {
-	
 	GetWorldTimerManager().SetTimer(TimerHandle_NextWaveStart, this, &ASGameMode::StartWave, TimeBetweenWaves, false);
 
 	SetWaveState(EWaveState::WaitingToStart);
+
+	RestartDeadPlayers();
 }
 
 void ASGameMode::CheckWaveState()
@@ -121,11 +123,26 @@ void ASGameMode::SetWaveState(EWaveState NewState)
 	}
 }
 
+void ASGameMode::RestartDeadPlayers()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* PC = It->Get();
+		if (PC && PC->GetPawn() == nullptr)
+		{
+			RestartPlayer(PC);
+		}
+	}
+
+}
+
 ASGameMode::ASGameMode()
 {
 	TimeBetweenWaves = 2.0f;
 
 	GameStateClass = ASGameState::StaticClass();
+	PlayerStateClass = ASPlayerState::StaticClass();
+
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 1.0f;
