@@ -4,7 +4,6 @@
 #include "TimerManager.h"
 #include "SHealthComponent.h"
 #include "SGameState.h"
-#include "SPlayerState.h"
 
 
 
@@ -37,14 +36,18 @@ void ASGameMode::EndWave()
 
 void ASGameMode::PrepareForNextWave()
 {
+	
 	GetWorldTimerManager().SetTimer(TimerHandle_NextWaveStart, this, &ASGameMode::StartWave, TimeBetweenWaves, false);
 <<<<<<< HEAD
 
 	SetWaveState(EWaveState::WaitingToStart);
+<<<<<<< HEAD
 
 	RestartDeadPlayers();
 =======
 >>>>>>> parent of 2751d76... Replicated Wave State to all players
+=======
+>>>>>>> parent of 91dbfe9... Added Proto Level
 }
 
 void ASGameMode::CheckWaveState()
@@ -120,26 +123,11 @@ void ASGameMode::SetWaveState(EWaveState NewState)
 	}
 }
 
-void ASGameMode::RestartDeadPlayers()
-{
-	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-	{
-		APlayerController* PC = It->Get();
-		if (PC && PC->GetPawn() == nullptr)
-		{
-			RestartPlayer(PC);
-		}
-	}
-
-}
-
 ASGameMode::ASGameMode()
 {
 	TimeBetweenWaves = 2.0f;
 
 	GameStateClass = ASGameState::StaticClass();
-	PlayerStateClass = ASPlayerState::StaticClass();
-
 
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 1.0f;
