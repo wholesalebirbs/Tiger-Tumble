@@ -16,3 +16,14 @@ void ASGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	DOREPLIFETIME(ASGameState, WaveState);
 }
 
+void ASGameState::SetWaveState(EWaveState NewState)
+{
+	if (Role == ROLE_Authority)
+	{
+		EWaveState OldState = WaveState;
+
+		WaveState = NewState;
+		//call on server
+		OnRep_WaveState(OldState);
+	}
+}
