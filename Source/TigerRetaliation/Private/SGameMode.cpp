@@ -55,11 +55,8 @@ void ASGameMode::PrepareForNextWave()
 	SetWaveState(EWaveState::WaitingToStart);
 
 
-	//RestartDeadPlayers();
+	RestartDeadPlayers();
 
-//Replicated Wave State to all players
-
-//Added Proto Level
 }
 
 void ASGameMode::CheckWaveState()
@@ -136,6 +133,18 @@ void ASGameMode::SetWaveState(EWaveState NewState)
 	if (ensureAlways(GS))
 	{
 		GS->SetWaveState(NewState);
+	}
+}
+
+void ASGameMode::RestartDeadPlayers()
+{
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		APlayerController* PC = It->Get();
+		if (PC && PC->GetPawn() == nullptr)
+		{
+			RestartPlayer(PC);
+		}
 	}
 }
 
