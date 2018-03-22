@@ -6,6 +6,8 @@
 #include "SGameState.h"
 #include "SPlayerState.h"
 
+
+
 void ASGameMode::SpawnBotTimerElapsed()
 {
 	SpawnNewBot();
@@ -26,24 +28,23 @@ void ASGameMode::StartWave()
 
 	GetWorldTimerManager().SetTimer(TimerHandle_BotSpawner, this, &ASGameMode::SpawnBotTimerElapsed, 1.0f, true, 0.0f);
 
-	SetWaveState(EWaveState::WaveInProgress);
-
 }
 
 void ASGameMode::EndWave()
 {
 	GetWorldTimerManager().ClearTimer(TimerHandle_BotSpawner);
-
-	SetWaveState(EWaveState::WaitingToComplete);
 }
 
 void ASGameMode::PrepareForNextWave()
 {
 	GetWorldTimerManager().SetTimer(TimerHandle_NextWaveStart, this, &ASGameMode::StartWave, TimeBetweenWaves, false);
+<<<<<<< HEAD
 
 	SetWaveState(EWaveState::WaitingToStart);
 
 	RestartDeadPlayers();
+=======
+>>>>>>> parent of 2751d76... Replicated Wave State to all players
 }
 
 void ASGameMode::CheckWaveState()
@@ -77,8 +78,6 @@ void ASGameMode::CheckWaveState()
 
 	if (!bIsAnyBotAlive)
 	{
-		SetWaveState(EWaveState::WaveComplete);
-
 		PrepareForNextWave();
 	}
 }
@@ -108,8 +107,6 @@ void ASGameMode::GameOver()
 {
 	EndWave();
 
-	SetWaveState(EWaveState::GameOver);
-
 	//@TODO finish up the match present game over to players
 	UE_LOG(LogTemp, Log, TEXT("GAME OVER! Players Died!"))
 }
@@ -119,7 +116,7 @@ void ASGameMode::SetWaveState(EWaveState NewState)
 	ASGameState* GS = GetGameState<ASGameState>();
 	if (ensureAlways(GS))
 	{
-		GS->SetWaveState(NewState);
+		GS->WaveState = NewState;
 	}
 }
 
