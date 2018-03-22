@@ -6,6 +6,16 @@
 #include "SGameState.h"
 
 
+ASGameMode::ASGameMode()
+{
+	TimeBetweenWaves = 2.0f;
+
+	GameStateClass = ASGameState::StaticClass();
+
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.TickInterval = 1.0f;
+}
+
 
 void ASGameMode::SpawnBotTimerElapsed()
 {
@@ -38,16 +48,16 @@ void ASGameMode::PrepareForNextWave()
 {
 	
 	GetWorldTimerManager().SetTimer(TimerHandle_NextWaveStart, this, &ASGameMode::StartWave, TimeBetweenWaves, false);
-<<<<<<< HEAD
+//HEAD
 
 	SetWaveState(EWaveState::WaitingToStart);
-<<<<<<< HEAD
+//HEAD
 
-	RestartDeadPlayers();
-=======
->>>>>>> parent of 2751d76... Replicated Wave State to all players
-=======
->>>>>>> parent of 91dbfe9... Added Proto Level
+	//RestartDeadPlayers();
+
+//Replicated Wave State to all players
+
+//Added Proto Level
 }
 
 void ASGameMode::CheckWaveState()
@@ -123,15 +133,6 @@ void ASGameMode::SetWaveState(EWaveState NewState)
 	}
 }
 
-ASGameMode::ASGameMode()
-{
-	TimeBetweenWaves = 2.0f;
-
-	GameStateClass = ASGameState::StaticClass();
-
-	PrimaryActorTick.bCanEverTick = true;
-	PrimaryActorTick.TickInterval = 1.0f;
-}
 
 void ASGameMode::StartPlay()
 {
