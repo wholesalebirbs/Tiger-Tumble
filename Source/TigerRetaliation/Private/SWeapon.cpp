@@ -29,7 +29,7 @@ ASWeapon::ASWeapon()
 	TracerTargetName = "BeamEnd";
 
 	BaseDamage = 20.0f;
-
+	BulletSpread = 2.0f;
 	RateOfFire = 600;
 
 	SetReplicates(true);
@@ -62,6 +62,10 @@ void ASWeapon::Fire()
 		MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
 		FVector ShotDirection = EyeRotation.Vector();
+
+		//buller spread
+		float HalfRad = FMath::DegreesToRadians(BulletSpread);
+		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
 
 		FVector TraceEnd = EyeLocation + (EyeRotation.Vector() * 1000);
 
