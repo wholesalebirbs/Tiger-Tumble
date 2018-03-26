@@ -67,7 +67,7 @@ void ASWeapon::Fire()
 		float HalfRad = FMath::DegreesToRadians(BulletSpread);
 		ShotDirection = FMath::VRandCone(ShotDirection, HalfRad, HalfRad);
 
-		FVector TraceEnd = EyeLocation + (EyeRotation.Vector() * 1000);
+		FVector TraceEnd = EyeLocation + (EyeRotation.Vector() * 10000000);
 
 		FCollisionQueryParams QueryParams;
 		QueryParams.AddIgnoredActor(MyOwner);

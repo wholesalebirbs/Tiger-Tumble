@@ -71,7 +71,7 @@ protected:
 	UFUNCTION()
 	void OnHealthChanged(USHealthComponent* OwningHealthComp, float Health, float HealthDelta, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
-	UPROPERTY(Replicated, EditDefaultsOnly, Category = "Player")
+	UPROPERTY(Replicated, VisibleAnywhere, Category = "Player")
 	bool bDied;
 
 public:	
